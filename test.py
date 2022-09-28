@@ -78,7 +78,7 @@ def bot_guess(word_list):
     my_secret = input(constants.rules)
     if len(my_secret) != 5:
         input("word not allowed. Press enter to continue...")
-        bot_guess()
+        bot_guess(word_list)
 
     guess = word_list[randint(0, len(word_list) - 1)]
 
@@ -92,48 +92,36 @@ def bot_guess(word_list):
         while winning:
             guess = word_list[randint(0, len(word_list) - 1)]
             print(my_secret)
-            correct_but_wrong = int(
-                input(
-                    f"Bot: Is the word '{guess}'?\n\n How many letters are correct but on the wrong position?: "
-                )
-            )
-            correct_and_right = int(
-                input("\n How many letters are correct and on the correct position?: ")
-            )
+            wrong_pos = int(input(f"Bot: Is the word '{guess}'?\n\n How many letters are correct but on the wrong position?: "))
+            correct_pos = int(input("\n How many letters are correct and on the correct position?: "))            
 
-            if correct_but_wrong == 0:
+            if wrong_pos == 0:
                 for word in word_list:
+                    pos_match = 0
                     for letter in guess:
-                        if correct_and_right > 0:
-                            if guess.index(letter) is word.index(letter):
-                                if word not in potential_words_list:
-                                    print(f"*** 1 * ADDING WORD {word} ***")
-                                    potential_words_list.append(word)
-                            elif letter not in word:
-                                if word not in potential_words_list:
-                                    print(f"*** 2 * ADDING WORD {word} ***")
-                                    potential_words_list.append(word)
+                        if correct_pos > 0:
+                            if guess.find(letter) == word.find(letter):
+                                pos_match += 1
+                            if pos_match == correct_pos:
+                                    if word not in potential_words_list:
+                                        print(f"*** 1 * ADDING WORD {word} ***")
+                                        potential_words_list.append(word)
+                        elif letter not in word:
+                            if word not in potential_words_list:
+                                print(f"*** 2 * ADDING WORD {word} ***")
+                                potential_words_list.append(word)
 
-            elif correct_but_wrong > 0:
+            elif wrong_pos > 0:
                 for word in word_list:
                     num_matches = 0
+                    pos_match = 0
                     for letter in guess:
-                        if letter in word:
+                        if guess.find(letter) == word.find(letter):
+                            pos_match += 1
+                        elif letter in word:
                             num_matches += 1
-                            if (
-                                word not in potential_words_list
-                                and num_matches >= correct_but_wrong
-                            ):
-                                if correct_and_right == 0:
-                                    if guess.index(letter) != word.index(letter):
-                                        print(
-                                            f"*** 3 * ADDING WORD {word} matches = {num_matches} ***"
-                                        )
-                                        potential_words_list.append(word)
-                                else:
-                                    print(
-                                        f"*** 4 * ADDING WORD {word} matches = {num_matches} ***"
-                                    )
+                        if num_matches == wrong_pos and pos_match == correct_pos and word not in potential_words_list:
+                                    print(f"*** 3 * ADDING WORD {word} matches = {num_matches} ***")
                                     potential_words_list.append(word)
 
             print(len(potential_words_list))
@@ -142,6 +130,29 @@ def bot_guess(word_list):
                 word_list.remove(guess)
 
             potential_words_list = []
+
+
+
+                        # elif wrong_pos == num_matches:
+
+                        #                                 gissing:vingo       current:roder         answer: kanel
+
+
+                        #     if (
+                        #         word not in potential_words_list
+                        #         and num_matches == wrong_pos
+                        #     ):
+                        #         if correct_pos == 0:
+                        #             if guess.index(letter) != word.index(letter):
+                        #                 print(
+                        #                     f"*** 3 * ADDING WORD {word} matches = {num_matches} ***"
+                        #                 )
+                        #                 potential_words_list.append(word)
+                        #         else:
+                        #             print(
+                        #                 f"*** 4 * ADDING WORD {word} matches = {num_matches} ***"
+                        #             )
+                        #             potential_words_list.append(word)
 
 
 bot_guess(raw_list)

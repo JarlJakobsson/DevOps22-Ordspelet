@@ -1,3 +1,5 @@
-a = "qwert"
+import random
 
-a.index()
+b = "asdf"
+
+print(b.find("a"))
