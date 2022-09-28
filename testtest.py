@@ -1,0 +1,3 @@
+a = "qwert"
+
+a.index()
