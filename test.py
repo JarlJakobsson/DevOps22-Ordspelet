@@ -17,11 +17,11 @@ total_guesses = 0
 
 def win_func(secret_word):
     print("Bot: You have bested me.")
-    teach_bot = input("Bot: Please teach me the word:\n Do you want to teach the bot? Y/N: ")
+    teach_bot = input("Bot: Please teach me the word.\nDo you want to teach the bot? Y/N: ")
     if teach_bot == "y" or "Y":
         add_word(secret_word)
 
-with open("words.txt", encoding="utf8") as f:
+with open("words.txt", "r", encoding="utf8") as f:
     for line in f.readlines():
         raw_list.append(line.replace("\n", ""))  ## slice away \n
 
@@ -66,12 +66,13 @@ def player_guess():
                 wrong_pos_list.remove[wrong_pos_list.index(letter)]
             except:
                 pass
+
             print(f"You have made {guess_counter} guesses.\n")
             print(f"{len(wrong_pos_list)} letters are correct but on the wrong poition")
             print(f"{len(correct_pos_list)} letters are on the correct position")
 
 def bot_guess(word_list):
-    secret_word = input(constants.rules)
+    secret_word = input(constants.rules).lower()
     if len(secret_word) != 5:
         input("word not allowed. Press enter to continue...")
         bot_guess(word_list)
@@ -103,33 +104,25 @@ def bot_guess(word_list):
                         pos_match += 1
                     elif letter in word:
                         num_matches += 1
-                    if num_matches == wrong_pos and pos_match == correct_pos and word not in potential_words_list:
-                                print(f"*** ADDING {word} ***")
-                                potential_words_list.append(word)
-                    if not num_matches == wrong_pos and not pos_match == correct_pos:
-                        try:
-                            potential_words_list.remove(word)
-                        except:
-                            pass
+                    #if num_matches == wrong_pos and pos_match == correct_pos and word not in potential_words_list:
+                                #print(f"*** ADDING {word} ***")
+                               # potential_words_list.append(word)
+                if num_matches == wrong_pos and pos_match == correct_pos and word not in potential_words_list:
+                    try:
+                        #potential_words_list.remove(word)
+                        potential_words_list.append(word)
+                    except:
+                        pass
             
             print(len(potential_words_list))
             print(f"Bot have made {guess_counter} guesses.")
             word_list = potential_words_list
             if guess in word_list:
                 word_list.remove(guess)
+            if secret_word not in word_list:
+                print("*** secret word removed ***")
 
             potential_words_list = []
 
 
-# bot_guess(raw_list)
-
-
-
-# for word in word_list:
-#     for letter in guess:
-#         if letter in word:
-#             if word in potential_words_list:
-#                 pass
-#             else:
-#                 potential_words_list.append(word)
 bot_guess(raw_list)
