@@ -1,5 +1,4 @@
 import random
 
-b = "asdf"
-
-print(b.find("a"))
+a = ["c","b", "d"]
+print(a.count())
