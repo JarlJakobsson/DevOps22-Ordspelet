@@ -1,39 +1,55 @@
-    while not winning:
-        guess = input("Enter your guess: ").lower()
-        guess_counter += 1
-        print(f"You have made {guess_counter} guesses.")
-        if len(guess) != 5:
-            pass
+class Dog:
+    def __init__(self):
+        self.food = 0
 
-        elif guess == secret_word:
-            print("You won")
-            break
+    def eat(self):
+        self.food += 1
 
-        else:
-            for letter in guess:
-                if letter in secret_word:
-                    if secret_word.index(letter) is guess.index(letter):
-                        if (letter, guess.index(letter)) in correct_pos_list:
-                            pass
+    def __str__(self):
+        return f"I'm your best friend and my food level is {self.food}"
 
-                        else:
-                            correct_pos_list.append((letter, guess.index(letter)))
-                            correct_print[guess.index(letter)] = letter
-                    elif letter in correct_letter_list:
-                        pass
-                    else:
-                        correct_letter_list.append(letter)
+class Menu:
 
+    MAIN_MENU_TEXT = """
+    Welcome to this program!
+
+    1. Create a new object
+    2. Print your object
+    3. Delete your object
+    
+    type q or Q to delete
+    """
+
+    def user_choice(self):
+        return input("Enter your choice 1-3 or q: ")
+
+    def wait_for_user(self):
+        if self.running:
+            input("Please press any key to continues.")
+
+    def menu_commands(self, choice):
+        if choice == 'q' or choice == 'Q':
+            self.running = False
+        elif choice == "1":
+            self.dog = Dog()
+        elif choice == "2":
             try:
-                correct_letter_list.remove[correct_letter_list.index[letter]]
-            except:
-                pass
+                print(self.dog)
+            except AttributeError:
+                print("No object available to print")
+        elif choice == "3":
+            try:
+                del self.dog
+            except AttributeError:
+                print("No object to delete")
+                # Alternative self.dog = None
 
-            print(
-                f"""
-                Wrong position:     {" ".join(correct_letter_list)}
+    def start_loop(self):
+        self.running = True
+        while self.running:
+            print(Menu.MAIN_MENU_TEXT)
+            choice = self.user_choice()
+            self.menu_commands(choice)
+            self.wait_for_user()
 
-                                    {" ".join(correct_print)}
-
-            """
-            )
+#Menu().start_loop()
