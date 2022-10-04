@@ -1,19 +1,7 @@
-import sys
-# from constants import menu_text
-# from gamemodes import player_guess_game, bot_guess_game, bot_game
-import gamemodes
-import constants
+from constants import menu_text
+from gamemodes import player_guess_game, bot_guess_game, bot_game
 
 class Menu:
-
-    text = '''
-        ####### Main Menu #######
-        [1] Player guess game 
-        [2] Bot guess game    
-        [3] Bot game         
-        [q] Exit              
-        #########################
-'''
 
     def wait_for_user(self):
         if self.keep_going:
@@ -24,21 +12,21 @@ class Menu:
     
     def menu_commands(self, choice):
         if choice ==  "1":
-            gamemodes.player_guess_game()
+            player_guess_game()
 
         elif choice == "2":
-            gamemodes.bot_guess_game()
+            bot_guess_game()
 
         elif choice == "3":
-            gamemodes.bot_game()
+            bot_game()
 
-        elif choice == "q" or "Q":
+        elif choice == "q" or choice == "Q":
             self.keep_going = False
 
     def start_menu(self):
         self.keep_going = True
         while self.keep_going:
-            print(Menu.text)
+            print(menu_text)
             choice = self.user_choice()
             #choice = input("\nEnter your choice: ")
             self.menu_commands(choice)

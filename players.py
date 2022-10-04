@@ -14,7 +14,6 @@ class Guess_man(Mans):
 
     def make_guess(self):
         if len(self.word_list) > 0:
-            #print(len(self.word_list))
             guess = self.word_list[randint(0, len(self.word_list))-1]
             print(f"Guess man: Is the word '{guess}'?")
             return guess
@@ -52,6 +51,7 @@ class Secret_man(Mans):
 
     def create_secret(self):
         self.secret_word = self.word_list[randint(0, len(self.word_list)-1)]
+        print("Okay, I'm thinking of a word.")
         return self.secret_word
 
     def give_clues(self, guess):

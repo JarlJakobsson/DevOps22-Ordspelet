@@ -47,7 +47,7 @@ def bot_game():
         print(f"*** The secret word is {secret_man.secret_word}. ***")
         clues = secret_man.give_clues(guess)
         if clues == (0,5):
-            running = False
+            break
         guess_man.calculate(guess, clues[0], clues[1])
 
 if __name__ == "__main__":
