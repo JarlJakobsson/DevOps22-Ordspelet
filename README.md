@@ -1,25 +1,10 @@
 # DevOps22-Wordle
 
-guess counter +1
-check if word is correct
-else
-loop through evry letter
-if exists
-check if letter correct position
-correct_pos_list.append((l, guess.index(l)))
-else
-correct_letter_list.append(l)
+This is a word guessing game.
+It has 3 modes:
 
+First mode lets the player guess on a word the bot have randomized, the bot will then give the players cues based on correct letters.
+Second mode lets the player type in a word and lets the bot guess wich word it is. The player then gives clues based on correct letters.
+Third mode lets the bots play against eachother.
 
-TODO
-
-add teach word
-
-add save/load
-player guess, save secret word, save guesses(loop through guesses), save guesscounter?
-bot guess, save current wordlist, save guess counter, save secret word
-
-add save/load option
-add info help/quit
-
-test try to crash
+Run main.py to start the game.
