@@ -6,7 +6,8 @@ rules_text ="""
                 4. The word CAN'T be a name
                 5. The word CAN'T be a tense or plural of another word
                 #######################################################
-            Enter your secret word
+
+                Enter your secret word: 
 """
 
 menu_text = """

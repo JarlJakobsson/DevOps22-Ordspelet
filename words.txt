@@ -1860,4 +1860,4 @@ visky
 avsky
 aveny
 party
-burkakamel
+burka

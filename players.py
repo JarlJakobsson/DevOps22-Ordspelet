@@ -1,5 +1,6 @@
 from random import randint
 
+# Imports words.txt to raw_list using utf8 encoding to allow å ä ö
 raw_list = []
 
 with open("words.txt", "r", encoding="utf8") as f:
@@ -11,27 +12,79 @@ class Mans():
         self.word_list = raw_list
 
 class Guess_man(Mans):
+  
+    guess_list = []
+
+    def win_msg(self):
+        print("Guess man: EZ, I win :)")
+
+    def clear_guess_list(self):
+        self.guess_list = []
+
+    def control_word(self, new_word):
+        # Checks if any letter is used more than once
+        letter_count = 0
+        for letter in new_word:
+            if new_word.count(letter) > 1:
+                letter_count =+ 1
+        if letter_count > 1:
+            print("\nGuess man: The word uses some letters more than once.")
+            return
+
+        # Self.guess_list have guesses and clues in a tuple. Loops through every guess and compares its result with the clues given.
+        for t in self.guess_list:
+            num_matches = 0
+            pos_match = 0
+            for letter in t[0]:
+                if t[0].find(letter) == new_word.find(letter):
+                    pos_match += 1
+                elif letter in new_word:
+                    num_matches += 1
+
+            # If atleast one clues doesn't match the control check, Guess_man sais the player cheated.
+            if num_matches != t[1] or pos_match != t[2]:
+                print(f"\n\nGuess man: '{t[0]}' doesn't have {t[1]} correct letters on wrong position and {t[2]} letters on correct position! Cheater!")
+                self.guess_list = [] # Empties self.guess_list if user decides to play again
+                return
+
+        self.guess_list = [] # Empties self.guess_list if user decides to play again
+        self.add_word(new_word)
+        print("*** Adding word ***")
+
+    def lose_func(self): # Function for when bot loeses
+        print("Guess man: You have bested me.")
+        teach_bot = input("Guess man: Please teach me the word.\n\nDo you want to teach the bot? Y/N: ")
+        if teach_bot == "y" or teach_bot == "Y":
+            new_word = input("\nGuess man: Tell me the word again: ").lower()
+            self.control_word(new_word)        
+
+    def add_word(self, new_word): # Function to append new word to words.txt
+       with open("words.txt", "a", encoding="utf8") as f:
+           f.writelines(f"{new_word}\n")
 
     def make_guess(self):
-        if len(self.word_list) > 0:
+        if len(self.word_list) > 0: # Checks if Guess_man still have words in its word_list
+            input(f"Guess man: Thinking... I'm choosing between {self.word_list}.\n I have {len(self.word_list)} Potential words.\n\nPress Enter key to continue\n")
             guess = self.word_list[randint(0, len(self.word_list))-1]
             print(f"Guess man: Is the word '{guess}'?")
             return guess
-        else:
-            print("Guess man: You have bested me.")#win_func()
+        else: # If no words in word_list calls the lose_func
+            self.lose_func()
             return ""
 
     def calculate(self, guess, wrong_pos, correct_pos):
-        potential_word_list = [] # Creates a empty potential_word_ist
-        input(f"Guess man: Thinking... I'm choosing between {self.word_list}.\n I have {len(self.word_list)} Potential words.\nPress any key to continue\n")
+        potential_word_list = [] # Makes sure potential_word_list is empty
+        self.guess_list.append((guess, wrong_pos, correct_pos))
 
         if correct_pos == 5: # Checks win
-                print("Bot: EZ, I win :)")
+                print("\nGuess man: EZ, I win :)")
         
         if guess in potential_word_list: # Removes the guess from the word_list
             self.word_list.remove(guess)
 
-        for word in self.word_list:
+# Loops through every word in the word list and every letter in the guess, if letter is in word and on same position as guess, ads a pos_match counter, else ads a num_matches counter
+# Checks if the counters match the clues given and if the word is not already in the potential_word_list. If passes it appends the word to potential_word_list
+        for word in self.word_list: 
                     num_matches = 0
                     pos_match = 0
                     for letter in guess:
@@ -51,7 +104,7 @@ class Secret_man(Mans):
 
     def create_secret(self):
         self.secret_word = self.word_list[randint(0, len(self.word_list)-1)]
-        print("Okay, I'm thinking of a word.")
+        print("Secret man: Okay, I'm thinking of a word.")
         return self.secret_word
 
     def give_clues(self, guess):
@@ -60,7 +113,7 @@ class Secret_man(Mans):
         if self.guess == "help": # Incase you need help
             print(f"\n*** The secret word is {self.secret_word} ***")
 
-        elif self.guess == "quit":
+        elif self.guess == "quit": # Option to give up
             return(0,5)
 
         elif len(self.guess) != 5: # Controls the guess have 5 letters
@@ -85,7 +138,7 @@ class Secret_man(Mans):
                 return (len(wrong_pos_list), len(correct_pos_list))
 
             else:    
-                print(f"{len(wrong_pos_list)} letters are correct but on the wrong poistion, and {len(correct_pos_list)} letters are on the correct position.")
+                print(f"\n{len(wrong_pos_list)} letters are correct but on the wrong poistion, and {len(correct_pos_list)} letters are on the correct position.")
                 print(f"You have made {self.guess_counter} guesses.\n")                  
                 return (len(wrong_pos_list),len(correct_pos_list)) # Returns lenght of wrong_wrong post list and correct_pos_list as a tuple
 
@@ -101,16 +154,3 @@ class Player(Secret_man): # Player gets the guess_counter and secret_word holder
         except:
             print("You have to enter a number.")
             return self.give_clues() # If invalid input it will re-run give_clues() 
-        
-
-    # def win_func(secret_word):
-    #     print("Bot: You have bested me.")
-    #     teach_bot = input("Bot: Please teach me the word.\nDo you want to teach the bot? Y/N: ")
-    #     if teach_bot == "y" or "Y":
-    #         add_word(secret_word)
-    #     else:
-    #         return
-
-    # def add_word(new_word):
-    #    with open("words.txt", "a", encoding="utf8") as f:
-    #        f.writelines(new_word)

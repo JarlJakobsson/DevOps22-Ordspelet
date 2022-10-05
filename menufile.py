@@ -28,6 +28,5 @@ class Menu:
         while self.keep_going:
             print(menu_text)
             choice = self.user_choice()
-            #choice = input("\nEnter your choice: ")
             self.menu_commands(choice)
             self.wait_for_user()

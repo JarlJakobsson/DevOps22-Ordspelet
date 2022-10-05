@@ -11,3 +11,15 @@ else
 correct_letter_list.append(l)
 
 
+TODO
+
+add teach word
+
+add save/load
+player guess, save secret word, save guesses(loop through guesses), save guesscounter?
+bot guess, save current wordlist, save guess counter, save secret word
+
+add save/load option
+add info help/quit
+
+test try to crash
