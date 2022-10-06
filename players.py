@@ -1,15 +1,13 @@
 from random import randint
-
-# Imports words.txt to raw_list using utf8 encoding to allow å ä ö
-raw_list = []
-
-with open("words.txt", "r", encoding="utf8") as f:
-    for line in f.readlines():
-        raw_list.append(line.replace("\n", ""))  ## slice away \n
+import os
 
 class Mans():
+    # Initiates itself with self.word_list from words.txt
     def __init__(self):
-        self.word_list = raw_list
+        self.word_list = []
+        with open("words.txt", "r", encoding="utf8") as f:
+            for line in f.readlines():
+                self.word_list.append(line.replace("\n", ""))  ## removes \n
 
 class Guess_man(Mans):
   
@@ -44,10 +42,8 @@ class Guess_man(Mans):
             # If atleast one clues doesn't match the control check, Guess_man sais the player cheated.
             if num_matches != t[1] or pos_match != t[2]:
                 print(f"\n\nGuess man: '{t[0]}' doesn't have {t[1]} correct letters on wrong position and {t[2]} letters on correct position! Cheater!")
-                self.guess_list = [] # Empties self.guess_list if user decides to play again
                 return
 
-        self.guess_list = [] # Empties self.guess_list if user decides to play again
         self.add_word(new_word)
         print("*** Adding word ***")
 
@@ -102,6 +98,9 @@ class Secret_man(Mans):
     guess_counter = 0
     secret_word = ""
 
+    def tell_guesses(self):
+        print(f"Secret man: You have made {self.guess_counter} guesses.\n")  
+
     def create_secret(self):
         self.secret_word = self.word_list[randint(0, len(self.word_list)-1)]
         print("Secret man: Okay, I'm thinking of a word.")
@@ -114,11 +113,13 @@ class Secret_man(Mans):
             print(f"\n*** The secret word is {self.secret_word} ***")
 
         elif self.guess == "quit": # Option to give up
-            return(0,5)
+            print("*** Returning to Main menu *** ")
+            return False
 
         elif len(self.guess) != 5: # Controls the guess have 5 letters
-            print("Your guess needs 5 letters.")
             self.guess_counter += 1
+            print("Secret man: Your guess needs to be 5 letters. Try again.")
+            self.tell_guesses()
         else:
             wrong_pos_list = []
             correct_pos_list = []
@@ -138,8 +139,8 @@ class Secret_man(Mans):
                 return (len(wrong_pos_list), len(correct_pos_list))
 
             else:    
-                print(f"\n{len(wrong_pos_list)} letters are correct but on the wrong poistion, and {len(correct_pos_list)} letters are on the correct position.")
-                print(f"You have made {self.guess_counter} guesses.\n")                  
+                print(f"\nSecret man: {len(wrong_pos_list)} letters are correct but on the wrong poistion, and {len(correct_pos_list)} letters are on the correct position.")
+                self.tell_guesses()               
                 return (len(wrong_pos_list),len(correct_pos_list)) # Returns lenght of wrong_wrong post list and correct_pos_list as a tuple
 
 class Player(Secret_man): # Player gets the guess_counter and secret_word holder from Secret_man
@@ -149,8 +150,48 @@ class Player(Secret_man): # Player gets the guess_counter and secret_word holder
             wrong_pos = int(input("\nHow many letters are correct, but on wrong position?: "))
             correct_pos = int(input("\nHow many letters are on the correct position?: "))
             self.guess_counter += 1
-            print(f"Bot have made {self.guess_counter} guesses.")
+            print(f"Guess man have made {self.guess_counter} guesses.")
+            print(f"Guess man made a new record with only {self.guess_counter} guesses!")
             return (wrong_pos, correct_pos) # Returns a tuple with clues
         except:
             print("You have to enter a number.")
             return self.give_clues() # If invalid input it will re-run give_clues() 
+
+class Highscore():
+    # Initiates itself with temp_list from highscore.txt
+    def __init__(self):
+        temp_list = []
+        try:
+            with open("highscore.txt", "x") as f: # Tries to create highscore.txt
+                pass
+        except:
+            pass
+
+        empty_check = os.path.getsize("highscore.txt") ## Googled "how to check if a file is empty python" and found https://www.adamsmith.haus/python/answers/how-to-check-if-a-file-is-empty-in-python
+        if empty_check != 0:
+            with open("highscore.txt", "r") as f:
+                for line in f.readlines():
+                    temp_list.append(line.replace("\n", ""))
+
+            self.total_guesses = int(temp_list[0])
+            self.fastest_win = int(temp_list[1])
+            self.correct_guesses = int(temp_list[2])
+
+        else: # Incase highscore.txt is empty
+            self.total_guesses = 0
+            self.fastest_win = 9999
+            self.correct_guesses = 0
+
+
+    def send_score(self):
+        with open("highscore.txt", "w") as f: # Writes over highscore.txt to update new highscore
+            f.write(f"{self.total_guesses}\n{self.fastest_win}\n{self.correct_guesses}\n")
+
+    def print_record(self):
+        if self.correct_guesses == 0:
+            print("\nThere are no correct guesses yet.")
+        else:
+            print(f"The fastest win is in {self.fastest_win} guesses.")
+            print(f"The avrage guesses needed for a win is {self.total_guesses/self.correct_guesses} guesses.")
+
+highscore = Highscore() # Instantiates a Highscore

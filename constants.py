@@ -14,16 +14,8 @@ menu_text = """
                 ####### Main Menu #######
                 [1] Player guess game 
                 [2] Bot guess game    
-                [3] Bot game         
+                [3] Bot game
+                [4] Highscore         
                 [q] Exit              
                 #########################
 """
-
-
-
-# with open("guesses.txt", "r+") as g:
-#     total_guesses = g.read()
-#     print(total_guesses)
-#     g.write(str(guess_counter))
-
-# print(total_guesses)

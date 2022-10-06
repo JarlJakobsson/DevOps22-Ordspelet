@@ -1,5 +1,6 @@
 from constants import menu_text
 from gamemodes import player_guess_game, bot_guess_game, bot_game
+from players import highscore
 
 class Menu:
 
@@ -20,7 +21,11 @@ class Menu:
         elif choice == "3":
             bot_game()
 
+        elif choice == "4":
+            highscore.print_record()
+
         elif choice == "q" or choice == "Q":
+            highscore.send_score()
             self.keep_going = False
 
     def start_menu(self):
@@ -30,3 +35,4 @@ class Menu:
             choice = self.user_choice()
             self.menu_commands(choice)
             self.wait_for_user()
+
