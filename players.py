@@ -98,6 +98,26 @@ class Secret_man(Mans):
     guess_counter = 0
     secret_word = ""
 
+    def load_secret(self, filename):
+        try:
+            empty_check = os.path.getsize(f"{filename}.txt") # Googled "how to check if a file is empty in python" and found https://www.adamsmith.haus/python/answers/how-to-check-if-a-file-is-empty-in-python
+            if empty_check != 0:
+                with open(f"{filename}.txt", "r") as f:
+                    self.secret_word = f.read()
+                    print("\nSecret man: Okay, I'm thinking of the saved word again")
+                    return True
+            else:
+                print("File probably doesn't exist or is empty.")
+                return False
+        except:
+            print("File probably doesn't exist.")
+            return False
+
+    def save_secret(self):
+        with open(input("\nEnter the name of your savefile: ")+".txt", "w") as f: # saves the secret_word in a txt
+            f.write(self.secret_word)
+            print("*** Secret saved ***")
+
     def tell_guesses(self):
         print(f"Secret man: You have made {self.guess_counter} guesses.\n")  
 
@@ -110,7 +130,13 @@ class Secret_man(Mans):
         self.guess = guess
 
         if self.guess == "help": # Incase you need help
+            print('\nType "hint" to see the secret word\nType "quit" to give up.\nType "save" to save the secret word to play again later.')
+
+        elif self.guess == "hint":
             print(f"\n*** The secret word is {self.secret_word} ***")
+
+        elif self.guess == "save": # To save your game
+            self.save_secret()
 
         elif self.guess == "quit": # Option to give up
             print("*** Returning to Main menu *** ")
@@ -151,7 +177,6 @@ class Player(Secret_man): # Player gets the guess_counter and secret_word holder
             correct_pos = int(input("\nHow many letters are on the correct position?: "))
             self.guess_counter += 1
             print(f"Guess man have made {self.guess_counter} guesses.")
-            print(f"Guess man made a new record with only {self.guess_counter} guesses!")
             return (wrong_pos, correct_pos) # Returns a tuple with clues
         except:
             print("You have to enter a number.")
@@ -161,27 +186,23 @@ class Highscore():
     # Initiates itself with temp_list from highscore.txt
     def __init__(self):
         temp_list = []
+        
         try:
-            with open("highscore.txt", "x") as f: # Tries to create highscore.txt
-                pass
-        except:
-            pass
+            empty_check = os.path.getsize("highscore.txt") ## Googled "how to check if a file is empty in python" and found https://www.adamsmith.haus/python/answers/how-to-check-if-a-file-is-empty-in-python
+            if empty_check != 0:
+                with open("highscore.txt", "r") as f:
+                    for line in f.readlines():
+                        temp_list.append(line.replace("\n", ""))
 
-        empty_check = os.path.getsize("highscore.txt") ## Googled "how to check if a file is empty python" and found https://www.adamsmith.haus/python/answers/how-to-check-if-a-file-is-empty-in-python
-        if empty_check != 0:
-            with open("highscore.txt", "r") as f:
-                for line in f.readlines():
-                    temp_list.append(line.replace("\n", ""))
+                self.total_guesses = int(temp_list[0])
+                self.fastest_win = int(temp_list[1])
+                self.correct_guesses = int(temp_list[2])
 
-            self.total_guesses = int(temp_list[0])
-            self.fastest_win = int(temp_list[1])
-            self.correct_guesses = int(temp_list[2])
-
-        else: # Incase highscore.txt is empty
+        except: # Incase highscore.txt is empty or doesn't exist.
             self.total_guesses = 0
             self.fastest_win = 9999
             self.correct_guesses = 0
-
+                
 
     def send_score(self):
         with open("highscore.txt", "w") as f: # Writes over highscore.txt to update new highscore
@@ -192,6 +213,12 @@ class Highscore():
             print("\nThere are no correct guesses yet.")
         else:
             print(f"The fastest win is in {self.fastest_win} guesses.")
-            print(f"The avrage guesses needed for a win is {self.total_guesses/self.correct_guesses} guesses.")
+            print(f"The avrage guesses needed for a win are {self.total_guesses/self.correct_guesses} guesses.")
+
+    def update_highscore(self, guess_counter):
+        self.correct_guesses += 1
+        self.total_guesses += guess_counter
+        if self.fastest_win > guess_counter:
+            self.fastest_win = guess_counter
 
 highscore = Highscore() # Instantiates a Highscore

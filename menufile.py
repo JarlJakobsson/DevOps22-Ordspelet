@@ -1,5 +1,5 @@
 from constants import menu_text
-from gamemodes import player_guess_game, bot_guess_game, bot_game
+from gamemodes import player_guess_game, bot_guess_game, bot_game, load_game
 from players import highscore
 
 class Menu:
@@ -22,6 +22,9 @@ class Menu:
             bot_game()
 
         elif choice == "4":
+            load_game()
+
+        elif choice == "5":
             highscore.print_record()
 
         elif choice == "q" or choice == "Q":

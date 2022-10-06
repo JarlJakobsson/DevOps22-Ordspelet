@@ -15,7 +15,8 @@ menu_text = """
                 [1] Player guess game 
                 [2] Bot guess game    
                 [3] Bot game
-                [4] Highscore         
+                [4] Load game
+                [5] Highscore         
                 [q] Exit              
                 #########################
 """

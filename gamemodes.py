@@ -8,16 +8,13 @@ def player_guess_game():
     running = True
     
     while running:
-        print('Type "help" to see the secret word\nType "quit" to give up.')
+        print("\nType help to see commands: ")
         clues = secret_man.give_clues(input("\nEnter your guess: ").lower()) # Calls give_clues() from secret_man and takes input as arg, saves the returned value as clues
         if clues == False:
             highscore.total_guesses += secret_man.guess_counter
             break
         if clues == (0,5): # If clues are (0,5) it means 5 letters are on the correct positon and the game is over
-            highscore.correct_guesses += 1
-            highscore.total_guesses += secret_man.guess_counter
-            if highscore.fastest_win > secret_man.guess_counter:
-                highscore.fastest_win = secret_man.guess_counter
+            highscore.update_highscore(secret_man.guess_counter)
             break
 
 def bot_guess_game():
@@ -38,10 +35,7 @@ def bot_guess_game():
             print(f"*** the secret word is {secret_word} ***") # Game tells the user the secret word so it's easier to give clues.
             clues = player.give_clues()
             if clues == (0,5):
-                highscore.correct_guesses += 1
-                highscore.total_guesses += player.guess_counter
-                if highscore.fastest_win > player.guess_counter:
-                    highscore.fastest_win = player.guess_counter
+                highscore.update_highscore(player.guess_counter)
                 break
             guess_man.calculate(guess, clues[0], clues[1]) # Calls calculate from guess_man and takes guess, clues element 0 and clues element 1 as args.
 
@@ -59,10 +53,22 @@ def bot_game():
         print(f"*** The secret word is {secret_man.secret_word}. ***") # Game tells user the secret word to help following the game.
         clues = secret_man.give_clues(guess)
         if clues == (0,5): # If clues are 0,5 it means 5 letters are on the correct position.
-            highscore.correct_guesses += 1
-            highscore.total_guesses += secret_man.guess_counter
-            if highscore.fastest_win > secret_man.guess_counter:
-                highscore.fastest_win = secret_man.guess_counter
+            highscore.update_highscore(secret_man.guess_counter)
             guess_man.win_msg()
             break
         guess_man.calculate(guess, clues[0], clues[1])
+
+def load_game():
+    secret_man = Secret_man()
+    running = secret_man.load_secret(input("\nEnter the filename you want to load: "))
+    
+    while running:
+        print('Type "help" to see commands.')
+        clues = secret_man.give_clues(input("\nEnter your guess: ").lower()) # Calls give_clues() from secret_man and takes input as arg, saves the returned value as clues
+        if clues == False:
+            highscore.total_guesses += secret_man.guess_counter
+            break
+        if clues == (0,5): # If clues are (0,5) it means 5 letters are on the correct positon and the game is over
+            highscore.correct_guesses += 1
+            highscore.total_guesses += secret_man.guess_counter
+            break
